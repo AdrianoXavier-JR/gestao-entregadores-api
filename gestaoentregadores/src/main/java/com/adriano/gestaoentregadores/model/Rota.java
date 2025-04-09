@@ -1,14 +1,16 @@
 package com.adriano.gestaoentregadores.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Entregador {
+public class Rota {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,13 +18,7 @@ public class Entregador {
 
     private String nome;
 
-    @Enumerated(EnumType.STRING)
-    private StatusEntregador status;
-
-    private Double latitude;
-    private Double longitude;
-
-    @ManyToOne
-    @JoinColumn(name = "rota_id")
-    private Rota rota;
+    @OneToMany(mappedBy = "rota", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<PontoRota> pontos;
 }

@@ -2,7 +2,9 @@ package com.adriano.gestaoentregadores.service;
 
 import com.adriano.gestaoentregadores.model.Entregador;
 import com.adriano.gestaoentregadores.model.EntregadorCreateDTO;
+import com.adriano.gestaoentregadores.model.Rota;
 import com.adriano.gestaoentregadores.repository.EntregadorRepository;
+import com.adriano.gestaoentregadores.repository.RotaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +13,11 @@ import java.util.List;
 public class EntregadorService {
 
     private final EntregadorRepository repository;
+    private final RotaRepository rotaRepository;
 
-    public EntregadorService(EntregadorRepository repository) {
+    public EntregadorService(EntregadorRepository repository, RotaRepository rotaRepository) {
         this.repository = repository;
+        this.rotaRepository = rotaRepository;
     }
 
     public List<Entregador> listarTodos() {
@@ -60,7 +64,18 @@ public class EntregadorService {
         return repository.findEntregadoresAtivosMaisProximos(latitude, longitude);
     }
 
+    public Entregador associarRota(Long entregadorId, Rota rota) {
+        Entregador entregador = repository.findById(entregadorId).orElse(null);
+        if (entregador == null) return null;
+        entregador.setRota(rota);
+        return repository.save(entregador);
+    }
+
     public void deletar(Long id) {
         repository.deleteById(id);
+    }
+
+    public RotaRepository getRotaRepository() {
+        return rotaRepository;
     }
 }

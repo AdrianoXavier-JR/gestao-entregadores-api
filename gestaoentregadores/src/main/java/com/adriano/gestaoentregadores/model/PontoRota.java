@@ -1,5 +1,6 @@
 package com.adriano.gestaoentregadores.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,22 +8,18 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Entregador {
+public class PontoRota {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
-
-    @Enumerated(EnumType.STRING)
-    private StatusEntregador status;
-
-    private Double latitude;
-    private Double longitude;
+    private double latitude;
+    private double longitude;
+    private int ordem;
 
     @ManyToOne
     @JoinColumn(name = "rota_id")
+    @JsonBackReference
     private Rota rota;
 }

@@ -2,12 +2,14 @@ package com.adriano.gestaoentregadores.controller;
 
 import com.adriano.gestaoentregadores.model.Entregador;
 import com.adriano.gestaoentregadores.model.EntregadorCreateDTO;
+import com.adriano.gestaoentregadores.model.Rota;
 import com.adriano.gestaoentregadores.service.EntregadorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/entregadores")
 public class EntregadorController {
@@ -52,6 +54,16 @@ public class EntregadorController {
     public List<Entregador> listarAtivosMaisProximos(@RequestParam Double latitude,
                                                      @RequestParam Double longitude) {
         return service.buscarAtivosMaisProximos(latitude, longitude);
+    }
+
+    @PutMapping("/{id}/rota/{rotaId}")
+    public ResponseEntity<Entregador> associarRota(@PathVariable Long id, @PathVariable Long rotaId) {
+        Rota rota = service.getRotaRepository().findById(rotaId).orElse(null);
+        if (rota == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Entregador atualizado = service.associarRota(id, rota);
+        return atualizado != null ? ResponseEntity.ok(atualizado) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
